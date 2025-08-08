@@ -1,6 +1,12 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
 import {
   motion,
   useScroll,
@@ -11,10 +17,11 @@ import {
   useMotionValue,
   useAnimation,
   AnimatePresence,
-} from "framer-motion"
-import { Button } from "../components/ui/button"
-import { Badge } from "../components/ui/badge"
-import { Card, CardContent } from "../components/ui/card"
+} from "framer-motion";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Card, CardContent } from "../components/ui/card";
+import AboutUs from "../components/AboutUs";
 import {
   ArrowRight,
   Play,
@@ -41,7 +48,7 @@ import {
   Clock,
   DollarSign,
   ZapIcon,
-} from "lucide-react"
+} from "lucide-react";
 
 // Enhanced animation variants
 const staggerContainer = {
@@ -51,7 +58,7 @@ const staggerContainer = {
       delayChildren: 0.1,
     },
   },
-}
+};
 
 const staggerItem = {
   initial: { opacity: 0, y: 30, scale: 0.9 },
@@ -66,7 +73,7 @@ const staggerItem = {
       stiffness: 100,
     },
   },
-}
+};
 
 const slideInLeft = {
   initial: { opacity: 0, x: -100 },
@@ -78,7 +85,7 @@ const slideInLeft = {
       ease: [0.25, 0.46, 0.45, 0.94],
     },
   },
-}
+};
 
 const slideInRight = {
   initial: { opacity: 0, x: 100 },
@@ -90,7 +97,7 @@ const slideInRight = {
       ease: [0.25, 0.46, 0.45, 0.94],
     },
   },
-}
+};
 
 const scaleIn = {
   initial: { opacity: 0, scale: 0.5 },
@@ -104,7 +111,7 @@ const scaleIn = {
       stiffness: 200,
     },
   },
-}
+};
 
 const rotateIn = {
   initial: { opacity: 0, rotate: -180, scale: 0 },
@@ -118,11 +125,11 @@ const rotateIn = {
       type: "spring",
     },
   },
-}
+};
 
 // Particle system hook
 const useParticles = (count = 50) => {
-  const [particles, setParticles] = useState([])
+  const [particles, setParticles] = useState([]);
 
   useEffect(() => {
     const newParticles = Array.from({ length: count }, (_, i) => ({
@@ -134,17 +141,17 @@ const useParticles = (count = 50) => {
       speedY: (Math.random() - 0.5) * 0.5,
       opacity: Math.random() * 0.5 + 0.1,
       color: ["purple", "blue", "pink", "cyan"][Math.floor(Math.random() * 4)],
-    }))
-    setParticles(newParticles)
-  }, [count])
+    }));
+    setParticles(newParticles);
+  }, [count]);
 
-  return particles
-}
+  return particles;
+};
 
 // Enhanced Mobile Navigation Hook
 const useMobileNavigation = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [currentSection, setCurrentSection] = useState(0)
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentSection, setCurrentSection] = useState(0);
 
   const sections = useMemo(
     () => [
@@ -153,25 +160,25 @@ const useMobileNavigation = () => {
       { id: "testimonials", label: "Testimonials", icon: Users },
       { id: "cta", label: "Get Started", icon: Target },
     ],
-    [],
-  )
+    []
+  );
 
   const navigateToSection = useCallback(
     (index) => {
-      const sectionId = sections[index]?.id
+      const sectionId = sections[index]?.id;
       if (sectionId === "hero") {
-        window.scrollTo({ top: 0, behavior: "smooth" })
+        window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         document.getElementById(sectionId)?.scrollIntoView({
           behavior: "smooth",
           block: "start",
-        })
+        });
       }
-      setCurrentSection(index)
-      setIsOpen(false)
+      setCurrentSection(index);
+      setIsOpen(false);
     },
-    [sections],
-  )
+    [sections]
+  );
 
   return {
     isOpen,
@@ -180,42 +187,53 @@ const useMobileNavigation = () => {
     setCurrentSection,
     sections,
     navigateToSection,
-  }
-}
+  };
+};
 
 // Enhanced Swipe Detection Hook
-const useSwipeDetection = (onSwipeLeft, onSwipeRight, onSwipeUp, onSwipeDown) => {
+const useSwipeDetection = (
+  onSwipeLeft,
+  onSwipeRight,
+  onSwipeUp,
+  onSwipeDown
+) => {
   const handlePan = useCallback(
     (event, info) => {
-      const { offset, velocity } = info
-      const swipeThreshold = 30
-      const velocityThreshold = 300
+      const { offset, velocity } = info;
+      const swipeThreshold = 30;
+      const velocityThreshold = 300;
 
       requestAnimationFrame(() => {
         if (Math.abs(offset.x) > Math.abs(offset.y)) {
           if (offset.x > swipeThreshold || velocity.x > velocityThreshold) {
-            onSwipeRight?.()
-          } else if (offset.x < -swipeThreshold || velocity.x < -velocityThreshold) {
-            onSwipeLeft?.()
+            onSwipeRight?.();
+          } else if (
+            offset.x < -swipeThreshold ||
+            velocity.x < -velocityThreshold
+          ) {
+            onSwipeLeft?.();
           }
         } else {
           if (offset.y > swipeThreshold || velocity.y > velocityThreshold) {
-            onSwipeDown?.()
-          } else if (offset.y < -swipeThreshold || velocity.y < -velocityThreshold) {
-            onSwipeUp?.()
+            onSwipeDown?.();
+          } else if (
+            offset.y < -swipeThreshold ||
+            velocity.y < -velocityThreshold
+          ) {
+            onSwipeUp?.();
           }
         }
-      })
+      });
     },
-    [onSwipeLeft, onSwipeRight, onSwipeUp, onSwipeDown],
-  )
+    [onSwipeLeft, onSwipeRight, onSwipeUp, onSwipeDown]
+  );
 
-  return { handlePan }
-}
+  return { handlePan };
+};
 
 // Enhanced Floating Particles Component
 const FloatingParticles = React.memo(() => {
-  const particles = useParticles(30)
+  const particles = useParticles(30);
 
   return (
     <div className="fixed inset-0 pointer-events-none z-5">
@@ -245,235 +263,253 @@ const FloatingParticles = React.memo(() => {
         />
       ))}
     </div>
-  )
-})
+  );
+});
 
-FloatingParticles.displayName = "FloatingParticles"
+FloatingParticles.displayName = "FloatingParticles";
 
 // Enhanced Mobile Menu Component
-const MobileMenu = React.memo(({ isOpen, setIsOpen, sections, currentSection, navigateToSection }) => {
-  return (
-    <>
-      <motion.button
-        className="md:hidden relative z-50 p-2 text-white"
-        onClick={() => setIsOpen(!isOpen)}
-        whileTap={{ scale: 0.9 }}
-        whileHover={{ scale: 1.1 }}
-        transition={{ duration: 0.2 }}
-      >
-        <motion.div animate={isOpen ? { rotate: 180 } : { rotate: 0 }} transition={{ duration: 0.3, type: "spring" }}>
-          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </motion.div>
-      </motion.button>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            className="fixed inset-0 bg-black/95 backdrop-blur-lg z-40 md:hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <motion.div
-              className="flex flex-col items-center justify-center h-full space-y-8"
-              variants={staggerContainer}
-              initial="initial"
-              animate="animate"
-              exit="initial"
-            >
-              {sections.map((section, index) => (
-                <motion.button
-                  key={section.id}
-                  className={`flex items-center space-x-4 text-2xl font-semibold transition-all duration-300 ${
-                    currentSection === index ? "text-purple-400 scale-110" : "text-white hover:text-purple-400"
-                  }`}
-                  onClick={() => navigateToSection(index)}
-                  variants={staggerItem}
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.05, x: 10 }}
-                >
-                  <motion.div animate={{ rotate: currentSection === index ? 360 : 0 }} transition={{ duration: 0.5 }}>
-                    <section.icon className="w-6 h-6" />
-                  </motion.div>
-                  <span>{section.label}</span>
-                </motion.button>
-              ))}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  )
-})
-
-MobileMenu.displayName = "MobileMenu"
-
-// Enhanced Swipeable Card Component
-const SwipeableCard = React.memo(({ children, onSwipeLeft, onSwipeRight, index }) => {
-  const dragX = useMotionValue(0)
-  const controls = useAnimation()
-
-  const handleDragEnd = useCallback(
-    async (event, info) => {
-      const threshold = 50
-      if (info.offset.x > threshold) {
-        await controls.start({ x: 300, opacity: 0 })
-        onSwipeRight?.(index)
-        controls.set({ x: 0, opacity: 1 })
-      } else if (info.offset.x < -threshold) {
-        await controls.start({ x: -300, opacity: 0 })
-        onSwipeLeft?.(index)
-        controls.set({ x: 0, opacity: 1 })
-      } else {
-        controls.start({ x: 0 })
-      }
-    },
-    [onSwipeLeft, onSwipeRight, index, controls],
-  )
-
-  return (
-    <motion.div
-      drag="x"
-      dragConstraints={{ left: -100, right: 100 }}
-      dragElastic={0.2}
-      onDragEnd={handleDragEnd}
-      animate={controls}
-      whileDrag={{
-        scale: 1.05,
-        rotate: dragX.get() * 0.1,
-        boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-      }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="cursor-grab active:cursor-grabbing"
-    >
-      {children}
-    </motion.div>
-  )
-})
-
-SwipeableCard.displayName = "SwipeableCard"
-
-// Enhanced Touch Feedback Component
-const TouchFeedback = React.memo(({ children, haptic = false, variant = "default" }) => {
-  const handleTouch = useCallback(() => {
-    if (haptic && "vibrate" in navigator) {
-      navigator.vibrate(10)
-    }
-  }, [haptic])
-
-  const variants = {
-    default: { scale: 0.98 },
-    bounce: { scale: 0.95, y: 2 },
-    pulse: { scale: [1, 1.05, 1] },
-    rotate: { scale: 0.98, rotate: 5 },
-  }
-
-  return (
-    <motion.div
-      whileTap={variants[variant]}
-      whileHover={{ scale: 1.02 }}
-      onTouchStart={handleTouch}
-      className="touch-manipulation"
-      transition={{ duration: 0.15, type: "spring" }}
-    >
-      {children}
-    </motion.div>
-  )
-})
-
-TouchFeedback.displayName = "TouchFeedback"
-
-// Enhanced Section Navigation Dots
-const SectionDots = React.memo(({ sections, currentSection, navigateToSection }) => {
-  return (
-    <motion.div
-      className="fixed right-6 top-1/2 transform -translate-y-1/2 z-40 hidden md:flex flex-col space-y-4"
-      initial={{ opacity: 0, x: 50 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, delay: 0.5 }}
-    >
-      {sections.map((section, index) => (
+const MobileMenu = React.memo(
+  ({ isOpen, setIsOpen, sections, currentSection, navigateToSection }) => {
+    return (
+      <>
         <motion.button
-          key={section.id}
-          className={`relative group ${
-            currentSection === index
-              ? "w-4 h-4 bg-purple-500 border-2 border-purple-400"
-              : "w-3 h-3 bg-transparent border-2 border-gray-500 hover:border-purple-400"
-          } rounded-full transition-all duration-300`}
-          onClick={() => navigateToSection(index)}
-          whileHover={{ scale: 1.5 }}
-          whileTap={{ scale: 0.8 }}
-          transition={{ duration: 0.2, type: "spring" }}
-          title={section.label}
+          className="md:hidden relative z-50 p-2 text-white"
+          onClick={() => setIsOpen(!isOpen)}
+          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.1 }}
+          transition={{ duration: 0.2 }}
         >
           <motion.div
-            className="absolute inset-0 bg-purple-500 rounded-full"
-            initial={{ scale: 0 }}
-            animate={{ scale: currentSection === index ? 1 : 0 }}
+            animate={isOpen ? { rotate: 180 } : { rotate: 0 }}
             transition={{ duration: 0.3, type: "spring" }}
-          />
-          <motion.div
-            className="absolute -left-16 top-1/2 transform -translate-y-1/2 bg-black/80 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            initial={{ x: 10 }}
-            whileHover={{ x: 0 }}
           >
-            {section.label}
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </motion.div>
         </motion.button>
-      ))}
-    </motion.div>
-  )
-})
 
-SectionDots.displayName = "SectionDots"
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              className="fixed inset-0 bg-black/95 backdrop-blur-lg z-40 md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="flex flex-col items-center justify-center h-full space-y-8"
+                variants={staggerContainer}
+                initial="initial"
+                animate="animate"
+                exit="initial"
+              >
+                {sections.map((section, index) => (
+                  <motion.button
+                    key={section.id}
+                    className={`flex items-center space-x-4 text-2xl font-semibold transition-all duration-300 ${
+                      currentSection === index
+                        ? "text-purple-400 scale-110"
+                        : "text-white hover:text-purple-400"
+                    }`}
+                    onClick={() => navigateToSection(index)}
+                    variants={staggerItem}
+                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.05, x: 10 }}
+                  >
+                    <motion.div
+                      animate={{ rotate: currentSection === index ? 360 : 0 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <section.icon className="w-6 h-6" />
+                    </motion.div>
+                    <span>{section.label}</span>
+                  </motion.button>
+                ))}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </>
+    );
+  }
+);
+
+MobileMenu.displayName = "MobileMenu";
+
+// Enhanced Swipeable Card Component
+const SwipeableCard = React.memo(
+  ({ children, onSwipeLeft, onSwipeRight, index }) => {
+    const dragX = useMotionValue(0);
+    const controls = useAnimation();
+
+    const handleDragEnd = useCallback(
+      async (event, info) => {
+        const threshold = 50;
+        if (info.offset.x > threshold) {
+          await controls.start({ x: 300, opacity: 0 });
+          onSwipeRight?.(index);
+          controls.set({ x: 0, opacity: 1 });
+        } else if (info.offset.x < -threshold) {
+          await controls.start({ x: -300, opacity: 0 });
+          onSwipeLeft?.(index);
+          controls.set({ x: 0, opacity: 1 });
+        } else {
+          controls.start({ x: 0 });
+        }
+      },
+      [onSwipeLeft, onSwipeRight, index, controls]
+    );
+
+    return (
+      <motion.div
+        drag="x"
+        dragConstraints={{ left: -100, right: 100 }}
+        dragElastic={0.2}
+        onDragEnd={handleDragEnd}
+        animate={controls}
+        whileDrag={{
+          scale: 1.05,
+          rotate: dragX.get() * 0.1,
+          boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="cursor-grab active:cursor-grabbing"
+      >
+        {children}
+      </motion.div>
+    );
+  }
+);
+
+SwipeableCard.displayName = "SwipeableCard";
+
+// Enhanced Touch Feedback Component
+const TouchFeedback = React.memo(
+  ({ children, haptic = false, variant = "default" }) => {
+    const handleTouch = useCallback(() => {
+      if (haptic && "vibrate" in navigator) {
+        navigator.vibrate(10);
+      }
+    }, [haptic]);
+
+    const variants = {
+      default: { scale: 0.98 },
+      bounce: { scale: 0.95, y: 2 },
+      pulse: { scale: [1, 1.05, 1] },
+      rotate: { scale: 0.98, rotate: 5 },
+    };
+
+    return (
+      <motion.div
+        whileTap={variants[variant]}
+        whileHover={{ scale: 1.02 }}
+        onTouchStart={handleTouch}
+        className="touch-manipulation"
+        transition={{ duration: 0.15, type: "spring" }}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+);
+
+TouchFeedback.displayName = "TouchFeedback";
+
+// Enhanced Section Navigation Dots
+const SectionDots = React.memo(
+  ({ sections, currentSection, navigateToSection }) => {
+    return (
+      <motion.div
+        className="fixed right-6 top-1/2 transform -translate-y-1/2 z-40 hidden md:flex flex-col space-y-4"
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 0.5 }}
+      >
+        {sections.map((section, index) => (
+          <motion.button
+            key={section.id}
+            className={`relative group ${
+              currentSection === index
+                ? "w-4 h-4 bg-purple-500 border-2 border-purple-400"
+                : "w-3 h-3 bg-transparent border-2 border-gray-500 hover:border-purple-400"
+            } rounded-full transition-all duration-300`}
+            onClick={() => navigateToSection(index)}
+            whileHover={{ scale: 1.5 }}
+            whileTap={{ scale: 0.8 }}
+            transition={{ duration: 0.2, type: "spring" }}
+            title={section.label}
+          >
+            <motion.div
+              className="absolute inset-0 bg-purple-500 rounded-full"
+              initial={{ scale: 0 }}
+              animate={{ scale: currentSection === index ? 1 : 0 }}
+              transition={{ duration: 0.3, type: "spring" }}
+            />
+            <motion.div
+              className="absolute -left-16 top-1/2 transform -translate-y-1/2 bg-black/80 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              initial={{ x: 10 }}
+              whileHover={{ x: 0 }}
+            >
+              {section.label}
+            </motion.div>
+          </motion.button>
+        ))}
+      </motion.div>
+    );
+  }
+);
+
+SectionDots.displayName = "SectionDots";
 
 // Enhanced Animated Section
-const AnimatedSection = React.memo(({ children, className = "", delay = 0, variant = "fadeUp" }) => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, {
-    once: true,
-    margin: "-50px",
-    amount: 0.2,
-  })
+const AnimatedSection = React.memo(
+  ({ children, className = "", delay = 0, variant = "fadeUp" }) => {
+    const ref = useRef(null);
+    const isInView = useInView(ref, {
+      once: true,
+      margin: "-50px",
+      amount: 0.2,
+    });
 
-  const variants = {
-    fadeUp: {
-      initial: { opacity: 0, y: 60 },
-      animate: { opacity: 1, y: 0 },
-    },
-    fadeLeft: slideInLeft,
-    fadeRight: slideInRight,
-    scale: scaleIn,
-    rotate: rotateIn,
+    const variants = {
+      fadeUp: {
+        initial: { opacity: 0, y: 60 },
+        animate: { opacity: 1, y: 0 },
+      },
+      fadeLeft: slideInLeft,
+      fadeRight: slideInRight,
+      scale: scaleIn,
+      rotate: rotateIn,
+    };
+
+    return (
+      <motion.div
+        ref={ref}
+        variants={variants[variant]}
+        initial="initial"
+        animate={isInView ? "animate" : "initial"}
+        transition={{
+          duration: 0.8,
+          delay,
+          ease: [0.25, 0.46, 0.45, 0.94],
+          type: "spring",
+          stiffness: 100,
+        }}
+        className={className}
+      >
+        {children}
+      </motion.div>
+    );
   }
+);
 
-  return (
-    <motion.div
-      ref={ref}
-      variants={variants[variant]}
-      initial="initial"
-      animate={isInView ? "animate" : "initial"}
-      transition={{
-        duration: 0.8,
-        delay,
-        ease: [0.25, 0.46, 0.45, 0.94],
-        type: "spring",
-        stiffness: 100,
-      }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  )
-})
-
-AnimatedSection.displayName = "AnimatedSection"
+AnimatedSection.displayName = "AnimatedSection";
 
 // Enhanced Floating Card
 const FloatingCard = React.memo(({ children, delay = 0, index = 0 }) => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
     <motion.div
@@ -512,19 +548,19 @@ const FloatingCard = React.memo(({ children, delay = 0, index = 0 }) => {
     >
       {children}
     </motion.div>
-  )
-})
+  );
+});
 
-FloatingCard.displayName = "FloatingCard"
+FloatingCard.displayName = "FloatingCard";
 
 // Enhanced Scroll Progress
 const ScrollProgress = React.memo(() => {
-  const { scrollYProgress } = useScroll()
+  const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 400,
     damping: 40,
     restDelta: 0.001,
-  })
+  });
 
   return (
     <>
@@ -540,107 +576,116 @@ const ScrollProgress = React.memo(() => {
         }}
       />
     </>
-  )
-})
+  );
+});
 
-ScrollProgress.displayName = "ScrollProgress"
+ScrollProgress.displayName = "ScrollProgress";
 
 // Enhanced Parallax Text
 const ParallaxText = React.memo(({ children, speed = 0.5, className = "" }) => {
-  const ref = useRef(null)
+  const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
-  })
+  });
 
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", `${speed * 100}%`])
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
-
-  return (
-    <motion.div ref={ref} style={{ y, opacity }} className={`${className} will-change-transform`}>
-      {children}
-    </motion.div>
-  )
-})
-
-ParallaxText.displayName = "ParallaxText"
-
-// Enhanced Staggered Container
-const StaggeredContainer = React.memo(({ children, className = "", variant = "default" }) => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-50px" })
-
-  const variants = {
-    default: staggerContainer,
-    wave: {
-      animate: {
-        transition: {
-          staggerChildren: 0.1,
-          delayChildren: 0.2,
-        },
-      },
-    },
-    spiral: {
-      animate: {
-        transition: {
-          staggerChildren: 0.05,
-          delayChildren: 0.1,
-        },
-      },
-    },
-  }
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", `${speed * 100}%`]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   return (
     <motion.div
       ref={ref}
-      className={className}
-      variants={variants[variant]}
-      initial="initial"
-      animate={isInView ? "animate" : "initial"}
+      style={{ y, opacity }}
+      className={`${className} will-change-transform`}
     >
-      {React.Children.map(children, (child, index) => (
-        <motion.div
-          key={index}
-          variants={staggerItem}
-          whileHover={{ scale: 1.02, y: -2 }}
-          transition={{ duration: 0.2 }}
-        >
-          {child}
-        </motion.div>
-      ))}
+      {children}
     </motion.div>
-  )
-})
+  );
+});
 
-StaggeredContainer.displayName = "StaggeredContainer"
+ParallaxText.displayName = "ParallaxText";
+
+// Enhanced Staggered Container
+const StaggeredContainer = React.memo(
+  ({ children, className = "", variant = "default" }) => {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+    const variants = {
+      default: staggerContainer,
+      wave: {
+        animate: {
+          transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.2,
+          },
+        },
+      },
+      spiral: {
+        animate: {
+          transition: {
+            staggerChildren: 0.05,
+            delayChildren: 0.1,
+          },
+        },
+      },
+    };
+
+    return (
+      <motion.div
+        ref={ref}
+        className={className}
+        variants={variants[variant]}
+        initial="initial"
+        animate={isInView ? "animate" : "initial"}
+      >
+        {React.Children.map(children, (child, index) => (
+          <motion.div
+            key={index}
+            variants={staggerItem}
+            whileHover={{ scale: 1.02, y: -2 }}
+            transition={{ duration: 0.2 }}
+          >
+            {child}
+          </motion.div>
+        ))}
+      </motion.div>
+    );
+  }
+);
+
+StaggeredContainer.displayName = "StaggeredContainer";
 
 // New Animated Counter Component
 const AnimatedCounter = React.memo(({ value, duration = 2 }) => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
-  const [count, setCount] = useState(0)
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!isInView) return
+    if (!isInView) return;
 
-    const numericValue = Number.parseFloat(value.replace(/[^0-9.]/g, ""))
-    let startTime = null
+    const numericValue = Number.parseFloat(value.replace(/[^0-9.]/g, ""));
+    let startTime = null;
 
     const animate = (currentTime) => {
-      if (startTime === null) startTime = currentTime
-      const progress = Math.min((currentTime - startTime) / (duration * 1000), 1)
+      if (startTime === null) startTime = currentTime;
+      const progress = Math.min(
+        (currentTime - startTime) / (duration * 1000),
+        1
+      );
 
-      setCount(Math.floor(numericValue * progress))
+      setCount(Math.floor(numericValue * progress));
 
       if (progress < 1) {
-        requestAnimationFrame(animate)
+        requestAnimationFrame(animate);
       }
-    }
+    };
 
-    requestAnimationFrame(animate)
-  }, [isInView, value, duration])
+    requestAnimationFrame(animate);
+  }, [isInView, value, duration]);
 
-  const displayValue = value.replace(/[0-9.]+/, count.toString())
+  const displayValue = value.replace(/[0-9.]+/, count.toString());
 
   return (
     <motion.span
@@ -651,10 +696,10 @@ const AnimatedCounter = React.memo(({ value, duration = 2 }) => {
     >
       {displayValue}
     </motion.span>
-  )
-})
+  );
+});
 
-AnimatedCounter.displayName = "AnimatedCounter"
+AnimatedCounter.displayName = "AnimatedCounter";
 
 // New Morphing Shape Component
 const MorphingShape = React.memo(({ className = "" }) => {
@@ -662,7 +707,13 @@ const MorphingShape = React.memo(({ className = "" }) => {
     <motion.div
       className={`absolute ${className}`}
       animate={{
-        borderRadius: ["60% 40% 30% 70%", "30% 60% 70% 40%", "70% 30% 40% 60%", "40% 70% 60% 30%", "60% 40% 30% 70%"],
+        borderRadius: [
+          "60% 40% 30% 70%",
+          "30% 60% 70% 40%",
+          "70% 30% 40% 60%",
+          "40% 70% 60% 30%",
+          "60% 40% 30% 70%",
+        ],
         rotate: [0, 90, 180, 270, 360],
         scale: [1, 1.1, 0.9, 1.05, 1],
       }}
@@ -672,129 +723,157 @@ const MorphingShape = React.memo(({ className = "" }) => {
         ease: "linear",
       }}
     />
-  )
-})
+  );
+});
 
-MorphingShape.displayName = "MorphingShape"
+MorphingShape.displayName = "MorphingShape";
 
 // Main App Component
 function App() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const { scrollY, scrollYProgress } = useScroll()
-  const scrollVelocity = useVelocity(scrollY)
-  const heroRef = useRef(null)
-  const containerRef = useRef(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const { scrollY, scrollYProgress } = useScroll();
+  const scrollVelocity = useVelocity(scrollY);
+  const heroRef = useRef(null);
+  const containerRef = useRef(null);
 
   // Mobile navigation
-  const { isOpen, setIsOpen, currentSection, setCurrentSection, sections, navigateToSection } = useMobileNavigation()
+  const {
+    isOpen,
+    setIsOpen,
+    currentSection,
+    setCurrentSection,
+    sections,
+    navigateToSection,
+  } = useMobileNavigation();
 
   // Enhanced parallax effects
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
-  const heroTextY = useTransform(scrollYProgress, [0, 0.5], ["0%", "50%"])
-  const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.9])
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0])
-  const heroRotate = useTransform(scrollYProgress, [0, 0.2], [0, -2])
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const heroTextY = useTransform(scrollYProgress, [0, 0.5], ["0%", "50%"]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.9]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+  const heroRotate = useTransform(scrollYProgress, [0, 0.2], [0, -2]);
 
   // Enhanced spring animations
-  const smoothVelocity = useSpring(scrollVelocity, { stiffness: 300, damping: 40 })
-  const backgroundBlur = useTransform(smoothVelocity, [-1000, 0, 1000], [0, 0, 3])
-  const backgroundScale = useTransform(smoothVelocity, [-1000, 0, 1000], [1, 1, 1.02])
+  const smoothVelocity = useSpring(scrollVelocity, {
+    stiffness: 300,
+    damping: 40,
+  });
+  const backgroundBlur = useTransform(
+    smoothVelocity,
+    [-1000, 0, 1000],
+    [0, 0, 3]
+  );
+  const backgroundScale = useTransform(
+    smoothVelocity,
+    [-1000, 0, 1000],
+    [1, 1, 1.02]
+  );
 
   // Enhanced swipe detection
   const { handlePan } = useSwipeDetection(
     useCallback(() => {
-      const nextSection = Math.min(currentSection + 1, sections.length - 1)
+      const nextSection = Math.min(currentSection + 1, sections.length - 1);
       if (nextSection !== currentSection) {
-        navigateToSection(nextSection)
+        navigateToSection(nextSection);
       }
     }, [currentSection, sections.length, navigateToSection]),
     useCallback(() => {
-      const prevSection = Math.max(currentSection - 1, 0)
+      const prevSection = Math.max(currentSection - 1, 0);
       if (prevSection !== currentSection) {
-        navigateToSection(prevSection)
+        navigateToSection(prevSection);
       }
     }, [currentSection, navigateToSection]),
     useCallback(() => {
-      const nextSection = Math.min(currentSection + 1, sections.length - 1)
+      const nextSection = Math.min(currentSection + 1, sections.length - 1);
       if (nextSection !== currentSection) {
-        navigateToSection(nextSection)
+        navigateToSection(nextSection);
       }
     }, [currentSection, sections.length, navigateToSection]),
     useCallback(() => {
-      const prevSection = Math.max(currentSection - 1, 0)
+      const prevSection = Math.max(currentSection - 1, 0);
       if (prevSection !== currentSection) {
-        navigateToSection(prevSection)
+        navigateToSection(prevSection);
       }
-    }, [currentSection, navigateToSection]),
-  )
+    }, [currentSection, navigateToSection])
+  );
 
   // Enhanced scroll tracking
   useEffect(() => {
-    let ticking = false
+    let ticking = false;
 
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          const scrollPosition = window.scrollY + window.innerHeight / 2
-          const featuresSection = document.getElementById("features")
-          const testimonialsSection = document.getElementById("testimonials")
-          const ctaSection = document.getElementById("cta")
+          const scrollPosition = window.scrollY + window.innerHeight / 2;
+          const featuresSection = document.getElementById("features");
+          const testimonialsSection = document.getElementById("testimonials");
+          const ctaSection = document.getElementById("cta");
 
           if (ctaSection && scrollPosition >= ctaSection.offsetTop) {
-            setCurrentSection(3)
-          } else if (testimonialsSection && scrollPosition >= testimonialsSection.offsetTop) {
-            setCurrentSection(2)
-          } else if (featuresSection && scrollPosition >= featuresSection.offsetTop) {
-            setCurrentSection(1)
+            setCurrentSection(3);
+          } else if (
+            testimonialsSection &&
+            scrollPosition >= testimonialsSection.offsetTop
+          ) {
+            setCurrentSection(2);
+          } else if (
+            featuresSection &&
+            scrollPosition >= featuresSection.offsetTop
+          ) {
+            setCurrentSection(1);
           } else {
-            setCurrentSection(0)
+            setCurrentSection(0);
           }
-          ticking = false
-        })
-        ticking = true
+          ticking = false;
+        });
+        ticking = true;
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [setCurrentSection])
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [setCurrentSection]);
 
   // Enhanced mouse tracking
   useEffect(() => {
-    let ticking = false
+    let ticking = false;
 
     const handleMouseMove = (e) => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          setMousePosition({ x: e.clientX, y: e.clientY })
-          ticking = false
-        })
-        ticking = true
+          setMousePosition({ x: e.clientX, y: e.clientY });
+          ticking = false;
+        });
+        ticking = true;
       }
-    }
+    };
 
-    window.addEventListener("mousemove", handleMouseMove, { passive: true })
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [])
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   const scrollToFeatures = useCallback(() => {
     document.getElementById("features")?.scrollIntoView({
       behavior: "smooth",
       block: "start",
-    })
-  }, [])
+    });
+  }, []);
 
   // Enhanced background style
   const backgroundStyle = useMemo(
     () => ({
       backgroundImage: `
-        radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at ${mousePosition.x + 100}px ${mousePosition.y + 100}px, rgba(59, 130, 246, 0.2) 0%, transparent 50%)
+        radial-gradient(circle at ${mousePosition.x}px ${
+        mousePosition.y
+      }px, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at ${mousePosition.x + 100}px ${
+        mousePosition.y + 100
+      }px, rgba(59, 130, 246, 0.2) 0%, transparent 50%)
       `,
       backgroundSize: "100px 100px, 150px 150px",
     }),
-    [mousePosition.x, mousePosition.y],
-  )
+    [mousePosition.x, mousePosition.y]
+  );
 
   return (
     <motion.div
@@ -804,7 +883,11 @@ function App() {
       style={{ touchAction: "pan-y" }}
     >
       <ScrollProgress />
-      <SectionDots sections={sections} currentSection={currentSection} navigateToSection={navigateToSection} />
+      <SectionDots
+        sections={sections}
+        currentSection={currentSection}
+        navigateToSection={navigateToSection}
+      />
       <FloatingParticles />
 
       {/* Enhanced Animated Background */}
@@ -870,7 +953,11 @@ function App() {
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-500"
                 animate={{ rotate: [0, 360] }}
-                transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                transition={{
+                  duration: 3,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "linear",
+                }}
               />
               <TrendingUp className="w-6 h-6 text-white relative z-10" />
             </motion.div>
@@ -888,8 +975,11 @@ function App() {
         </TouchFeedback>
 
         {/* Enhanced Desktop Navigation */}
-        <StaggeredContainer className="hidden md:flex items-center space-x-10" variant="wave">
-          {["Features", "Pricing", "About"].map((item, index) => (
+        <StaggeredContainer
+          className="hidden md:flex items-center space-x-10"
+          variant="wave"
+        >
+          {["Features", "Testimonials", "About"].map((item, index) => (
             <TouchFeedback key={item} variant="bounce">
               <motion.a
                 href={`#${item.toLowerCase()}`}
@@ -914,7 +1004,10 @@ function App() {
           ))}
           <TouchFeedback variant="pulse">
             <motion.div
-              whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(139, 92, 246, 0.3)" }}
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 10px 30px rgba(139, 92, 246, 0.3)",
+              }}
               whileTap={{ scale: 0.95 }}
             >
               <Button
@@ -959,14 +1052,26 @@ function App() {
           <motion.div
             initial={{ opacity: 0, scale: 0.5, y: -50 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 200 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.2,
+              type: "spring",
+              stiffness: 200,
+            }}
           >
             <TouchFeedback variant="pulse">
-              <motion.div whileHover={{ scale: 1.1, rotate: 2 }} transition={{ duration: 0.3 }}>
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 2 }}
+                transition={{ duration: 0.3 }}
+              >
                 <Badge className="mb-10 bg-gradient-to-r from-purple-500/30 to-blue-500/30 border-2 border-purple-500/50 text-purple-200 hover:from-purple-500/40 hover:to-blue-500/40 transition-all duration-300 px-6 py-3 text-lg font-semibold backdrop-blur-sm">
                   <motion.div
                     animate={{ rotate: [0, 360] }}
-                    transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                    transition={{
+                      duration: 2,
+                      repeat: Number.POSITIVE_INFINITY,
+                      ease: "linear",
+                    }}
                   >
                     <Sparkles className="w-5 h-5 mr-3" />
                   </motion.div>
@@ -974,7 +1079,10 @@ function App() {
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-full"
                     animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
-                    transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                    transition={{
+                      duration: 2,
+                      repeat: Number.POSITIVE_INFINITY,
+                    }}
                   />
                 </Badge>
               </motion.div>
@@ -1045,13 +1153,20 @@ function App() {
             >
               Automate. Analyze. Ascend.
             </motion.span>
-            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2, duration: 0.8 }}>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2, duration: 0.8 }}
+            >
               Your all-in-one AI-powered personal finance navigator.
             </motion.span>
           </motion.div>
 
           {/* Enhanced CTA Buttons */}
-          <StaggeredContainer className="flex flex-col sm:flex-row gap-6 mb-20" variant="wave">
+          <StaggeredContainer
+            className="flex flex-col sm:flex-row gap-6 mb-20"
+            variant="wave"
+          >
             <TouchFeedback haptic variant="bounce">
               <motion.div
                 whileHover={{
@@ -1076,7 +1191,10 @@ function App() {
                     Get Started Free
                     <motion.div
                       animate={{ x: [0, 5, 0] }}
-                      transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Number.POSITIVE_INFINITY,
+                      }}
                     >
                       <ArrowRight className="ml-3 w-6 h-6" />
                     </motion.div>
@@ -1108,7 +1226,10 @@ function App() {
                   <span className="relative z-10 flex items-center">
                     <motion.div
                       animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                      transition={{
+                        duration: 2,
+                        repeat: Number.POSITIVE_INFINITY,
+                      }}
                     >
                       <Play className="mr-3 w-6 h-6" />
                     </motion.div>
@@ -1120,11 +1241,29 @@ function App() {
           </StaggeredContainer>
 
           {/* Enhanced Feature Highlights */}
-          <StaggeredContainer className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mb-24" variant="spiral">
+          <StaggeredContainer
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mb-24"
+            variant="spiral"
+          >
             {[
-              { icon: Check, text: "Free 30-day trial", color: "green", gradient: "from-green-500 to-emerald-500" },
-              { icon: ZapIcon, text: "No credit card required", color: "blue", gradient: "from-blue-500 to-cyan-500" },
-              { icon: Shield, text: "Bank-level security", color: "purple", gradient: "from-purple-500 to-pink-500" },
+              {
+                icon: Check,
+                text: "Free 30-day trial",
+                color: "green",
+                gradient: "from-green-500 to-emerald-500",
+              },
+              {
+                icon: ZapIcon,
+                text: "No credit card required",
+                color: "blue",
+                gradient: "from-blue-500 to-cyan-500",
+              },
+              {
+                icon: Shield,
+                text: "Bank-level security",
+                color: "purple",
+                gradient: "from-purple-500 to-pink-500",
+              },
             ].map((item, index) => (
               <TouchFeedback key={index} variant="pulse">
                 <motion.div
@@ -1142,7 +1281,9 @@ function App() {
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-20 transition-opacity duration-300"
                     style={{
-                      background: `linear-gradient(135deg, ${item.gradient.split(" ")[1]}, ${item.gradient.split(" ")[3]})`,
+                      background: `linear-gradient(135deg, ${
+                        item.gradient.split(" ")[1]
+                      }, ${item.gradient.split(" ")[3]})`,
                     }}
                   />
                   <motion.div
@@ -1154,7 +1295,11 @@ function App() {
                     <motion.div
                       className="absolute inset-0 bg-white/20 rounded-2xl"
                       animate={{ scale: [1, 1.2, 1], opacity: [0, 0.5, 0] }}
-                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, delay: index * 0.5 }}
+                      transition={{
+                        duration: 2,
+                        repeat: Number.POSITIVE_INFINITY,
+                        delay: index * 0.5,
+                      }}
                     />
                   </motion.div>
                   <span className="text-xl text-gray-200 font-semibold group-hover:text-white transition-colors duration-300">
@@ -1166,12 +1311,35 @@ function App() {
           </StaggeredContainer>
 
           {/* Enhanced Stats Section */}
-          <StaggeredContainer className="grid grid-cols-2 md:grid-cols-4 gap-10 max-w-6xl mb-32" variant="wave">
+          <StaggeredContainer
+            className="grid grid-cols-2 md:grid-cols-4 gap-10 max-w-6xl mb-32"
+            variant="wave"
+          >
             {[
-              { value: "50K+", label: "Active Users", gradient: "from-purple-400 to-blue-400", icon: Users },
-              { value: "$2.5B+", label: "Managed Assets", gradient: "from-green-400 to-emerald-400", icon: DollarSign },
-              { value: "99.9%", label: "Uptime", gradient: "from-yellow-400 to-orange-400", icon: Clock },
-              { value: "4.9★", label: "User Rating", gradient: "from-pink-400 to-red-400", icon: Award },
+              {
+                value: "50K+",
+                label: "Active Users",
+                gradient: "from-purple-400 to-blue-400",
+                icon: Users,
+              },
+              {
+                value: "$2.5B+",
+                label: "Managed Assets",
+                gradient: "from-green-400 to-emerald-400",
+                icon: DollarSign,
+              },
+              {
+                value: "99.9%",
+                label: "Uptime",
+                gradient: "from-yellow-400 to-orange-400",
+                icon: Clock,
+              },
+              {
+                value: "4.9★",
+                label: "User Rating",
+                gradient: "from-pink-400 to-red-400",
+                icon: Award,
+              },
             ].map((stat, index) => (
               <TouchFeedback key={index} variant="bounce">
                 <motion.div
@@ -1183,7 +1351,11 @@ function App() {
                   }}
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1.8 + index * 0.1, duration: 0.6, type: "spring" }}
+                  transition={{
+                    delay: 1.8 + index * 0.1,
+                    duration: 0.6,
+                    type: "spring",
+                  }}
                 >
                   <motion.div className="mb-4 flex justify-center">
                     <motion.div
@@ -1242,14 +1414,28 @@ function App() {
       </motion.div>
 
       {/* Enhanced Features Section */}
-      <section id="features" className="relative z-10 py-32 px-6 lg:px-12 mt-20">
-        <AnimatedSection className="text-center mb-20" delay={0.2} variant="scale">
+      <section
+        id="features"
+        className="relative z-10 py-32 px-6 lg:px-12 mt-20"
+      >
+        <AnimatedSection
+          className="text-center mb-20"
+          delay={0.2}
+          variant="scale"
+        >
           <TouchFeedback variant="pulse">
-            <motion.div whileHover={{ scale: 1.05, rotate: 1 }} transition={{ duration: 0.3 }}>
+            <motion.div
+              whileHover={{ scale: 1.05, rotate: 1 }}
+              transition={{ duration: 0.3 }}
+            >
               <Badge className="mb-8 bg-gradient-to-r from-blue-500/30 to-purple-500/30 border-2 border-blue-500/50 text-blue-200 px-6 py-3 text-lg font-semibold backdrop-blur-sm">
                 <motion.div
                   animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                  transition={{
+                    duration: 3,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "linear",
+                  }}
                 >
                   <Brain className="w-5 h-5 mr-3" />
                 </motion.div>
@@ -1286,8 +1472,8 @@ function App() {
             transition={{ duration: 0.8, delay: 0.3 }}
             viewport={{ once: true }}
           >
-            Harness the power of AI to transform your financial journey with intelligent insights and automated
-            solutions.
+            Harness the power of AI to transform your financial journey with
+            intelligent insights and automated solutions.
           </motion.p>
         </AnimatedSection>
 
@@ -1404,9 +1590,16 @@ function App() {
         id="testimonials"
         className="relative z-10 py-40 px-6 lg:px-12 bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-sm"
       >
-        <AnimatedSection className="text-center mb-24" delay={0.2} variant="rotate">
+        <AnimatedSection
+          className="text-center mb-24"
+          delay={0.2}
+          variant="rotate"
+        >
           <TouchFeedback variant="pulse">
-            <motion.div whileHover={{ scale: 1.05, rotate: -1 }} transition={{ duration: 0.3 }}>
+            <motion.div
+              whileHover={{ scale: 1.05, rotate: -1 }}
+              transition={{ duration: 0.3 }}
+            >
               <Badge className="mb-8 bg-gradient-to-r from-yellow-500/30 to-orange-500/30 border-2 border-yellow-500/50 text-yellow-200 px-6 py-3 text-lg font-semibold backdrop-blur-sm">
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
@@ -1473,13 +1666,16 @@ function App() {
             <SwipeableCard
               key={index}
               index={index}
-              onSwipeLeft={() => console.log("Swiped left on testimonial", index)}
-              onSwipeRight={() => console.log("Swiped right on testimonial", index)}
+              onSwipeLeft={() =>
+                console.log("Swiped left on testimonial", index)
+              }
+              onSwipeRight={() =>
+                console.log("Swiped right on testimonial", index)
+              }
             >
               <FloatingCard delay={index * 0.15} index={index}>
                 <TouchFeedback variant="rotate">
                   <Card className=" min-h-[350px] bg-gradient-to-br from-gray-900/90 to-gray-800/90 border-2 border-gray-700/50 backdrop-blur-lg hover:border-yellow-500/50 transition-all duration-500 h-full group relative overflow-hidden">
-
                     <motion.div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <CardContent className="p-8 relative z-10">
                       <div className="flex items-center mb-6">
@@ -1497,8 +1693,12 @@ function App() {
                           >
                             {testimonial.name}
                           </motion.h4>
-                          <p className="text-gray-400 text-sm">{testimonial.role}</p>
-                          <p className="text-gray-500 text-xs">{testimonial.company}</p>
+                          <p className="text-gray-400 text-sm">
+                            {testimonial.role}
+                          </p>
+                          <p className="text-gray-500 text-xs">
+                            {testimonial.company}
+                          </p>
                         </div>
                       </div>
                       <div className="flex mb-6">
@@ -1507,7 +1707,10 @@ function App() {
                             key={i}
                             initial={{ opacity: 0, scale: 0 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: index * 0.2 + i * 0.1, duration: 0.3 }}
+                            transition={{
+                              delay: index * 0.2 + i * 0.1,
+                              duration: 0.3,
+                            }}
                             whileHover={{ scale: 1.3, rotate: 360 }}
                           >
                             <Star className="w-5 h-5 text-yellow-400 fill-current" />
@@ -1530,10 +1733,20 @@ function App() {
           ))}
         </div>
       </section>
+      <section
+        id="about"
+        className="relative z-10 py-32 px-6 lg:px-12 bg-black"
+      >
+        <AboutUs />
+      </section>
 
       {/* Enhanced CTA Section */}
       <section id="cta" className="relative z-10 py-40 px-6 lg:px-12">
-        <AnimatedSection className="text-center max-w-6xl mx-auto" delay={0.2} variant="scale">
+        <AnimatedSection
+          className="text-center max-w-6xl mx-auto"
+          delay={0.2}
+          variant="scale"
+        >
           <ParallaxText speed={0.2}>
             <motion.h2
               className="text-5xl md:text-7xl font-bold mb-10 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
@@ -1561,10 +1774,14 @@ function App() {
             transition={{ duration: 0.8, delay: 0.3 }}
             viewport={{ once: true }}
           >
-            Join thousands of users who have already taken control of their finances with Finsyte's AI-powered platform.
-            Start your journey today!
+            Join thousands of users who have already taken control of their
+            finances with Finsyte's AI-powered platform. Start your journey
+            today!
           </motion.p>
-          <StaggeredContainer className="flex flex-col sm:flex-row gap-8 justify-center" variant="wave">
+          <StaggeredContainer
+            className="flex flex-col sm:flex-row gap-8 justify-center"
+            variant="wave"
+          >
             <TouchFeedback haptic variant="bounce">
               <motion.div
                 whileHover={{
@@ -1588,14 +1805,21 @@ function App() {
                   <span className="relative z-10 flex items-center">
                     <motion.div
                       animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                      transition={{
+                        duration: 2,
+                        repeat: Number.POSITIVE_INFINITY,
+                        ease: "linear",
+                      }}
                     >
                       <Rocket className="mr-4 w-8 h-8" />
                     </motion.div>
                     Start Your Free Trial
                     <motion.div
                       animate={{ x: [0, 8, 0] }}
-                      transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Number.POSITIVE_INFINITY,
+                      }}
                     >
                       <ArrowRight className="ml-4 w-8 h-8" />
                     </motion.div>
@@ -1627,7 +1851,11 @@ function App() {
                   <span className="relative z-10 flex items-center">
                     <motion.div
                       animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                      transition={{
+                        duration: 3,
+                        repeat: Number.POSITIVE_INFINITY,
+                        ease: "linear",
+                      }}
                     >
                       <Globe className="mr-4 w-8 h-8" />
                     </motion.div>
@@ -1642,12 +1870,42 @@ function App() {
 
       {/* Enhanced Floating Elements */}
       {[
-        { top: "15%", left: "8%", color: "purple", delay: 1000, size: "w-3 h-3" },
-        { top: "35%", right: "15%", color: "blue", delay: 2000, size: "w-2 h-2" },
-        { bottom: "45%", left: "15%", color: "pink", delay: 500, size: "w-4 h-4" },
-        { bottom: "15%", right: "8%", color: "green", delay: 1500, size: "w-2 h-2" },
+        {
+          top: "15%",
+          left: "8%",
+          color: "purple",
+          delay: 1000,
+          size: "w-3 h-3",
+        },
+        {
+          top: "35%",
+          right: "15%",
+          color: "blue",
+          delay: 2000,
+          size: "w-2 h-2",
+        },
+        {
+          bottom: "45%",
+          left: "15%",
+          color: "pink",
+          delay: 500,
+          size: "w-4 h-4",
+        },
+        {
+          bottom: "15%",
+          right: "8%",
+          color: "green",
+          delay: 1500,
+          size: "w-2 h-2",
+        },
         { top: "60%", left: "5%", color: "cyan", delay: 3000, size: "w-3 h-3" },
-        { top: "80%", right: "25%", color: "yellow", delay: 2500, size: "w-2 h-2" },
+        {
+          top: "80%",
+          right: "25%",
+          color: "yellow",
+          delay: 2500,
+          size: "w-2 h-2",
+        },
       ].map((element, index) => (
         <motion.div
           key={index}
@@ -1707,7 +1965,7 @@ function App() {
         </motion.div>
       </AnimatePresence>
     </motion.div>
-  )
+  );
 }
 
-export default App
+export default App;
